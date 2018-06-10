@@ -1,0 +1,23 @@
+{
+  "name": "reddit-message-display",
+  "version": "1.0.0",
+  "description": "Using an arduino, display the username of the message sender when the message is sent",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mapinis/reddit-message-display.git"
+  },
+  "author": "Mark Apinis",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mapinis/reddit-message-display/issues"
+  },
+  "homepage": "https://github.com/mapinis/reddit-message-display#readme",
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "johnny-five": "^0.15.0"
+  }
+}
