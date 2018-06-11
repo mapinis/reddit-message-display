@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/mapinis/reddit-message-display#readme",
   "dependencies": {
+    "btoa": "^1.2.1",
     "dotenv": "^6.0.0",
-    "johnny-five": "^0.15.0"
+    "johnny-five": "^0.15.0",
+    "node-fetch": "^2.1.2"
   }
 }
