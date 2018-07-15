@@ -1,25 +1,9 @@
 const five = require("johnny-five");
 const fetch = require("node-fetch");
-const btoa = require("btoa");
-
 require("dotenv").config();
 
-const centerIn = (str, length) => {
-    return " ".repeat(Math.floor((length - str.length) / 2)) + str + " ".repeat(Math.ceil((length - str.length) / 2));
-}
+let tokenHolder = require("./token.js");
 
-const getToken = () => {
-  return fetch("https://www.reddit.com/api/v1/access_token", {
-    body:
-        "grant_type=password&username=" + process.env.REDDIT_USERNAME + "&password=" + process.env.REDDIT_PASSWORD,
-    headers: {
-        Authorization: "Basic " + btoa(process.env.CLIENT_ID + ":" + process.env.CLIENT_SECRET),
-        "User-Agent": "reddit-message-display/0.1 by " + process.env.REDDIT_USERNAME,
-        "Content-Type": "application/x-www-form-urlencoded"
-    },
-    method: "POST"
-  });
-};
 
 
 const board = new five.Board({
@@ -27,11 +11,20 @@ const board = new five.Board({
 });
 
 board.on("ready", () => {
+
+    let newMessagesArr = [];
+    const BLINK_TIME = 2000;
+    const DISPLAY_TIME = 4000;
+
     const lcd = new five.LCD({
         pins: [7, 8, 9, 10, 11, 12]
     }).clear();
 
     const led = new five.Led(13);
+
+    const centerIn = (str, length) => {
+        return " ".repeat(Math.floor((length - str.length) / 2)) + str + " ".repeat(Math.ceil((length - str.length) / 2));
+    }
 
     const showNewMessage = username => {
         lcd.clear().cursor(0, 0);
@@ -47,11 +40,29 @@ board.on("ready", () => {
                 setTimeout(() => {
                     lcd.cursor(1, 0)
                     .print(centerIn("-" + username.substr(15), 16));
-                }, 2000);
+                }, DISPLAY_TIME / 2);
             }
-        }, 2000);
+            setTimeout(() => {
+                lcd.clear().cursor(0, 0);
+            }, DISPLAY_TIME);
+        }, BLINK_TIME);
     }
 
-  getToken().then(response => response.json())
-            .then(({ access_token }) => console.log(access_token));
+    const displayMessages = () => {
+        // 6 seconds per message
+        const username = newMessagesArr.pop();
+        showNewMessage(username);
+        if(newMessagesArr.length > 0){
+            setTimeout(displayMessages, BLINK_TIME + DISPLAY_TIME);
+        } 
+    }
+
+    const getNewMessages = token => {
+        newMessagesArr.push("Person");
+        newMessagesArr.push("12345678901112134578");
+    }
+
+    getNewMessages();
+    displayMessages();
+
 });
